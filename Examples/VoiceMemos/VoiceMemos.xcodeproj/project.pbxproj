@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F9FCBF1250A4DF4000ACCB2 /* TransparentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9FCBF0250A4DF4000ACCB2 /* TransparentTests.swift */; };
+		3FE7F73E250A3479000D9DB1 /* Transparent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE7F73D250A3479000D9DB1 /* Transparent.swift */; };
 		CA93D05C249BF42500A6F65D /* VoiceMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA93D05B249BF42500A6F65D /* VoiceMemo.swift */; };
 		CA93D05E249BF46E00A6F65D /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA93D05D249BF46E00A6F65D /* Helpers.swift */; };
 		DC1394342469E59600EE1157 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = DC1394332469E59600EE1157 /* ComposableArchitecture */; };
@@ -56,6 +58,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F9FCBF0250A4DF4000ACCB2 /* TransparentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentTests.swift; sourceTree = "<group>"; };
+		3FE7F73D250A3479000D9DB1 /* Transparent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transparent.swift; sourceTree = "<group>"; };
 		CA93D05B249BF42500A6F65D /* VoiceMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemo.swift; sourceTree = "<group>"; };
 		CA93D05D249BF46E00A6F65D /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		DC5BDCAA24589177009C65A3 /* VoiceMemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceMemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +125,7 @@
 				DC5BDCAF24589177009C65A3 /* SceneDelegate.swift */,
 				CA93D05B249BF42500A6F65D /* VoiceMemo.swift */,
 				DC5BDCB124589177009C65A3 /* VoiceMemos.swift */,
+				3FE7F73D250A3479000D9DB1 /* Transparent.swift */,
 				DC5BDCB324589178009C65A3 /* Assets.xcassets */,
 				DC5BDF3B245893DB009C65A3 /* AudioPlayerClient */,
 				DC5BDF3424589389009C65A3 /* AudioRecorderClient */,
@@ -132,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				DC5BDCC424589179009C65A3 /* VoiceMemosTests.swift */,
+				3F9FCBF0250A4DF4000ACCB2 /* TransparentTests.swift */,
 			);
 			path = VoiceMemosTests;
 			sourceTree = "<group>";
@@ -270,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FE7F73E250A3479000D9DB1 /* Transparent.swift in Sources */,
 				DC5BDF362458939C009C65A3 /* AudioRecorderClient.swift in Sources */,
 				DC94F0122458E0AA00082DE9 /* MockAudioRecorderClient.swift in Sources */,
 				DC5BDF3D245893E6009C65A3 /* AudioPlayerClient.swift in Sources */,
@@ -287,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F9FCBF1250A4DF4000ACCB2 /* TransparentTests.swift in Sources */,
 				DC5BDCC524589179009C65A3 /* VoiceMemosTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

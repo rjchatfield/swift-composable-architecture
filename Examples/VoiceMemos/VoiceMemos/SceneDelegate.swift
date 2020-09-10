@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       rootView: VoiceMemosView(
         store: Store(
           initialState: VoiceMemosState(),
-          reducer: voiceMemosReducer.debug(),
+          reducer: voiceMemosReducer, //.debug(),
           environment: VoiceMemosEnvironment(
             audioPlayerClient: .live,
             audioRecorderClient: .live,

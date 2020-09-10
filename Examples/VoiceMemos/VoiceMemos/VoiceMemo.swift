@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Foundation
 import SwiftUI
+import Combine
 
 struct VoiceMemo: Equatable {
   var date: Date
@@ -38,29 +39,28 @@ struct VoiceMemoEnvironment {
   var mainQueue: AnySchedulerOf<DispatchQueue>
 }
 
-let voiceMemoReducer = Reducer<VoiceMemo, VoiceMemoAction, VoiceMemoEnvironment> {
-  memo, action, environment in
-  struct PlayerId: Hashable {}
-  struct TimerId: Hashable {}
-
-  switch action {
-  case .audioPlayerClient(.success(.didFinishPlaying)), .audioPlayerClient(.failure):
-    memo.mode = .notPlaying
-    return .cancel(id: TimerId())
-
-  case .delete:
-    return .merge(
-      environment.audioPlayerClient
-        .stop(PlayerId())
-        .fireAndForget(),
-      .cancel(id: PlayerId()),
-      .cancel(id: TimerId())
-    )
-
-  case .playButtonTapped:
-    switch memo.mode {
-    case .notPlaying:
-      memo.mode = .playing(progress: 0)
+enum VoiceMemoEffect: EffectProtocol {
+  case cancelTimer
+  case delete
+  case play(memoURL: URL)
+  case stop
+    
+  func callAsFunction(_ environment: VoiceMemoEnvironment) -> ActionPublisher<VoiceMemoAction> {
+    struct PlayerId: Hashable {}
+    struct TimerId: Hashable {}
+    
+    switch self {
+    case .cancelTimer:
+      return .cancel(id: TimerId())
+    case .delete:
+      return .merge(
+        environment.audioPlayerClient
+          .stop(PlayerId())
+          .fireAndForget(),
+        .cancel(id: PlayerId()),
+        .cancel(id: TimerId())
+      )
+    case .play(let memoURL):
       let start = environment.mainQueue.now
       return .merge(
         Effect.timer(id: TimerId(), every: 0.5, on: environment.mainQueue)
@@ -70,22 +70,42 @@ let voiceMemoReducer = Reducer<VoiceMemo, VoiceMemoAction, VoiceMemoEnvironment>
                 / TimeInterval(NSEC_PER_SEC)
             )
           },
-
+        
         environment.audioPlayerClient
-          .play(PlayerId(), memo.url)
+          .play(PlayerId(), memoURL)
           .catchToEffect()
           .map(VoiceMemoAction.audioPlayerClient)
           .cancellable(id: PlayerId())
       )
-
-    case .playing:
-      memo.mode = .notPlaying
+    case .stop:
       return .concatenate(
         .cancel(id: TimerId()),
         environment.audioPlayerClient
           .stop(PlayerId())
           .fireAndForget()
       )
+    }
+  }
+}
+
+let voiceMemoReducer = Reducer<VoiceMemo, VoiceMemoEffect> { memo, action in
+  switch action {
+  case .audioPlayerClient(.success(.didFinishPlaying)), .audioPlayerClient(.failure):
+    memo.mode = .notPlaying
+    return [.cancelTimer]
+
+  case .delete:
+    return [.delete]
+    
+  case .playButtonTapped:
+    switch memo.mode {
+    case .notPlaying:
+      memo.mode = .playing(progress: 0)
+      return [.play(memoURL: memo.url)]
+      
+    case .playing:
+      memo.mode = .notPlaying
+      return [.stop]
     }
 
   case let .timerUpdated(time):
@@ -95,11 +115,11 @@ let voiceMemoReducer = Reducer<VoiceMemo, VoiceMemoAction, VoiceMemoEnvironment>
     case let .playing(progress: progress):
       memo.mode = .playing(progress: time / memo.duration)
     }
-    return .none
+    return []
 
   case let .titleTextFieldChanged(text):
     memo.title = text
-    return .none
+    return []
   }
 }
 
@@ -109,10 +129,10 @@ struct VoiceMemoView: View {
   // not properly update.
   //
   // Feedback filed: https://gist.github.com/mbrandonw/cc5da3d487bcf7c4f21c27019a440d18
-  @ObservedObject var viewStore: ViewStore<VoiceMemo, VoiceMemoAction>
+  @ObservedObject var viewStore: Store<VoiceMemo, VoiceMemoAction>
 
   init(store: Store<VoiceMemo, VoiceMemoAction>) {
-    self.viewStore = ViewStore(store)
+    self.viewStore = store
   }
 
   var body: some View {
